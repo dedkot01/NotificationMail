@@ -2,14 +2,13 @@ package org.dedkot
 
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
+import org.dedkot.model.event.Event
 
 object Mailer {
 
-  final case class Message(str: String)
-
-  def apply(): Behavior[Message] = Behaviors.receiveMessage { msg =>
+  def apply(): Behavior[Event] = Behaviors.receiveMessage { event =>
     // some action for mail send
-    println("I got msg, look! " + msg.str)
+    println("I got msg, look!\n" + event)
 
     Behaviors.same
   }
