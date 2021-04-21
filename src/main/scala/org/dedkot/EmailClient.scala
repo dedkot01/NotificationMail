@@ -11,16 +11,6 @@ object EmailClient {
 
   private val conf = ConfigFactory.load()
 
-  private val email = new SimpleEmail()
-
-  email.setHostName(conf.getString("email.hostName"))
-  email.setSmtpPort(conf.getInt("email.smtpPort"))
-  email.setSSLOnConnect(conf.getBoolean("email.SSLOnConnect"))
-  email.setAuthenticator(new DefaultAuthenticator(
-    conf.getString("email.authenticator.userName"),
-    conf.getString("email.authenticator.password")))
-  email.setFrom(conf.getString("email.from"))
-
   /** Sends the simple email.
    *
    *  @param subject the email subject.
@@ -29,6 +19,15 @@ object EmailClient {
    *  @return the message id of the underlying MimeMessage.
    */
   def sendSimpleMsg(subject: String, text: String, destinationEmail: String): String = {
+    val email = new SimpleEmail()
+
+    email.setHostName(conf.getString("email.hostName"))
+    email.setSmtpPort(conf.getInt("email.smtpPort"))
+    email.setSSLOnConnect(conf.getBoolean("email.SSLOnConnect"))
+    email.setAuthenticator(new DefaultAuthenticator(
+      conf.getString("email.authenticator.userName"),
+      conf.getString("email.authenticator.password")))
+    email.setFrom(conf.getString("email.from"))
     email.setSubject(subject)
       .setMsg(text)
       .addTo(destinationEmail)
