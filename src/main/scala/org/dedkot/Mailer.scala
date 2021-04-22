@@ -1,7 +1,7 @@
 package org.dedkot
 
-import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.{Behavior, SupervisorStrategy}
 import com.typesafe.config.Config
 import org.dedkot.model.client.Client
 import org.dedkot.model.event.Event
@@ -28,10 +28,15 @@ class Mailer(emailClient: EmailClient, clients: Seq[Client]) {
 object Mailer {
 
   def apply(emailClientConfig: Config, clientsConfig: Config): Behavior[Event] = {
-    new Mailer(
+    val mailer = new Mailer(
       EmailClient(emailClientConfig),
       clientsConfig.getConfigList("clients").asScala.map(Client.configToClient).toSeq
-    ).process
+    )
+
+    Behaviors
+      .supervise(Behaviors.supervise(mailer.process)
+        .onFailure[IllegalArgumentException](SupervisorStrategy.resume))
+      .onFailure(SupervisorStrategy.restart)
   }
 
 }
