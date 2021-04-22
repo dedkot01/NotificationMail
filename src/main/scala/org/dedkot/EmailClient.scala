@@ -13,10 +13,10 @@ object EmailClient {
 
   /** Sends the simple email.
    *
-   *  @param subject the email subject.
-   *  @param text define the content of the mail.
-   *  @param destinationEmail add a recipient TO to the email.
-   *  @return the message id of the underlying MimeMessage.
+   * @param subject          the email subject.
+   * @param text             define the content of the mail.
+   * @param destinationEmail add a recipient TO to the email.
+   * @return the message id of the underlying MimeMessage.
    */
   def sendSimpleMsg(subject: String, text: String, destinationEmail: String): String = {
     val email = new SimpleEmail()

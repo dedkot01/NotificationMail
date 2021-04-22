@@ -3,10 +3,7 @@ package org.dedkot
 import akka.NotUsed
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
-import org.dedkot.model.event.{Event, Stage, Status}
-
-import java.time.Instant
-import scala.util.Random
+import org.dedkot.model.event.Event
 
 object Listener {
 
