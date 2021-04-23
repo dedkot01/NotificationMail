@@ -1,3 +1,6 @@
+local_config.conf
+local_clients.conf
+
 target/
 
 .settings
@@ -11,3 +14,4 @@ target/
 .bloop
 
 .bsp
+null
