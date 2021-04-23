@@ -19,8 +19,8 @@
 * `Listener` - актор, выполняющий чтение событий в системе (в текущей версии выполняется случайная генерация событий раз в 15 секунд).
 * `Mailer` - актор, принимающий сообщения от `Listener`, отправляет почту по имеющимся email адресам в соответствии с их принадлежностью к клиентам и наличию подписки на определенные события.
 
-Конфигурация Email задаётся в файле [application.conf](https://github.com/dedkot01/NotificationMail/blob/develop/src/main/resources/application.conf).
-Список клиентов читается из конфигурации [clients.conf](https://github.com/dedkot01/NotificationMail/blob/develop/src/main/resources/clients.conf).
+Конфигурация Email задаётся в файле `application.conf`.
+Список клиентов читается из конфигурации `clients.conf`.
 
 ## Запуск
 
