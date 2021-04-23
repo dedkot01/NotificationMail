@@ -16,4 +16,8 @@ class EventSpec extends AnyFlatSpec with should.Matchers {
         |Время: 2021-04-21T10:10:10Z""".stripMargin)
   }
 
+  it should "return Event of createRandom" in {
+    Event.createRandom.isInstanceOf[Event] should be(true)
+  }
+
 }

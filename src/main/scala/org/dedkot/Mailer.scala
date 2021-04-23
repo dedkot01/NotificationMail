@@ -2,21 +2,22 @@ package org.dedkot
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{Behavior, SupervisorStrategy}
-import com.typesafe.config.Config
+import org.dedkot.config.{ClientsConfig, EmailClientConfig}
 import org.dedkot.model.client.Client
 import org.dedkot.model.event.Event
 
-import scala.jdk.CollectionConverters.CollectionHasAsScala
-
 class Mailer(emailClient: EmailClient, clients: Seq[Client]) {
 
-  private def process: Behavior[Event] = Behaviors.receiveMessage { event =>
+  private def process: Behavior[Event] = Behaviors.receive { (context, event) =>
+    context.log.info(s"Received event: ${event.orgID}-${event.userID} ${event.stage}")
+
     clients.filter(client => client.id.equals(event.orgID) && client.subscriptions.contains(event.stage))
       .foreach { client =>
         client.emails.foreach { email =>
           emailClient.sendSimpleMsg(
             s"Event - ${event.stage}", event.toString, email)
-          println(s"Sent email for ${event.orgID} to ${email}")
+
+          context.log.info(s"Sent email to ${email} with event: ${event.orgID}-${event.userID} ${event.stage}")
         }
       }
 
@@ -27,10 +28,10 @@ class Mailer(emailClient: EmailClient, clients: Seq[Client]) {
 
 object Mailer {
 
-  def apply(emailClientConfig: Config, clientsConfig: Config): Behavior[Event] = {
+  def apply(emailClientConfig: EmailClientConfig, clientsConfig: ClientsConfig): Behavior[Event] = {
     val mailer = new Mailer(
       EmailClient(emailClientConfig),
-      clientsConfig.getConfigList("clients").asScala.map(Client.configToClient).toSeq
+      clientsConfig.clients
     )
 
     Behaviors

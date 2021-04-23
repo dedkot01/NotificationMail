@@ -8,9 +8,10 @@ import org.dedkot.model.event.Event
 object Listener {
 
   def apply(mailer: ActorRef[Event]): Behavior[NotUsed] = Behaviors.supervise[NotUsed] {
-    Behaviors.setup { _ =>
+    Behaviors.setup { context =>
       while (true) {
-        val event = Event.generateRandom
+        val event = Event.createRandom
+        context.log.info(s"Received event: ${event.orgID}-${event.userID} ${event.stage}")
 
         mailer ! event
 

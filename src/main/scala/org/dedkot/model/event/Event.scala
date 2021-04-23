@@ -18,7 +18,7 @@ final case class Event(orgID: String,
 
 object Event {
 
-  def generateRandom: Event = {
+  def createRandom: Event = {
     import scala.util.Random
 
     Event(

@@ -4,17 +4,21 @@ import akka.NotUsed
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorSystem, Behavior}
 import com.typesafe.config.ConfigFactory
+import org.dedkot.config.{ClientsConfig, EmailClientConfig}
 
 object Guard {
 
   private val config = ConfigFactory.load
 
   def apply(): Behavior[NotUsed] = Behaviors.setup { context =>
-    val clientsConfig = ConfigFactory.load("clients.conf")
-    val mailer = context.spawn(Mailer(config.getConfig("email"), clientsConfig),
+    val mailer = context.spawn(
+      Mailer(EmailClientConfig(config.getConfig("email")),
+        ClientsConfig(ConfigFactory.load("clients.conf"))),
       "mailer")
+    context.log.info("Mailer has been spawned")
 
-    val listener = context.spawn(Listener(mailer.ref), "listener")
+    context.spawn(Listener(mailer.ref), "listener")
+    context.log.info("Listener has been spawned")
 
     Behaviors.empty
   }

@@ -1,9 +1,9 @@
 package org.dedkot
 
-import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.commons.mail.{DefaultAuthenticator, SimpleEmail}
+import org.dedkot.config.EmailClientConfig
 
-class EmailClient(config: Config) {
+class EmailClient(config: EmailClientConfig) {
 
   /** Sends the simple email.
    *
@@ -15,13 +15,13 @@ class EmailClient(config: Config) {
   def sendSimpleMsg(subject: String, text: String, destinationEmail: String): String = {
     val email = new SimpleEmail()
 
-    email.setHostName(config.getString("hostName"))
-    email.setSmtpPort(config.getInt("smtpPort"))
-    email.setSSLOnConnect(config.getBoolean("SSLOnConnect"))
+    email.setHostName(config.hostName)
+    email.setSmtpPort(config.smtpPort)
+    email.setSSLOnConnect(config.SSLOnConnect)
     email.setAuthenticator(new DefaultAuthenticator(
-      config.getString("authenticator.userName"),
-      config.getString("authenticator.password")))
-    email.setFrom(config.getString("from"))
+      config.username,
+      config.password))
+    email.setFrom(config.fromEmail)
     email.setSubject(subject)
       .setMsg(text)
       .addTo(destinationEmail)
@@ -32,6 +32,6 @@ class EmailClient(config: Config) {
 
 object EmailClient {
 
-  def apply(config: Config): EmailClient = new EmailClient(config)
+  def apply(config: EmailClientConfig): EmailClient = new EmailClient(config)
 
 }

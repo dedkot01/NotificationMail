@@ -11,7 +11,7 @@ case class Client(id: String,
 
 object Client {
 
-  def configToClient(config: Config): Client =
+  def apply(config: Config): Client =
     Client(config.getString("id"),
       config.getStringList("emails").asScala.toSeq,
       config.getStringList("subscriptions").asScala.toSeq.map {
