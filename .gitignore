@@ -2,6 +2,7 @@ local_config.conf
 local_clients.conf
 
 target/
+sbt-dist/
 
 .settings
 .project
