@@ -2,19 +2,24 @@ package org.dedkot
 
 import akka.NotUsed
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ActorRef, Behavior}
+import akka.actor.typed.{ActorRef, Behavior, SupervisorStrategy}
+import org.dedkot.model.event.Event
 
 object Listener {
 
-  def apply(mailer: ActorRef[Mailer.Message]): Behavior[NotUsed] = Behaviors.setup { _ =>
-    // some action for reading kafka
-    while (true) {
-      mailer ! Mailer.Message("Hello, mailer. I'm listener, have a good day ^^")
+  def apply(mailer: ActorRef[Event]): Behavior[NotUsed] = Behaviors.supervise[NotUsed] {
+    Behaviors.setup { context =>
+      while (true) {
+        val event = Event.createRandom
+        context.log.info(s"Received event: ${event.orgID}-${event.userID} ${event.stage}")
 
-      Thread.sleep(5 * 1000)
+        mailer ! event
+
+        Thread.sleep(15 * 1000)
+      }
+
+      Behaviors.empty
     }
-
-    Behaviors.empty
-  }
+  }.onFailure(SupervisorStrategy.restart)
 
 }

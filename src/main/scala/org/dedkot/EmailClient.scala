@@ -1,38 +1,37 @@
 package org.dedkot
 
-import com.typesafe.config.ConfigFactory
 import org.apache.commons.mail.{DefaultAuthenticator, SimpleEmail}
+import org.dedkot.config.EmailClientConfig
 
-/** Singleton object. Implements sending email messages.
- *
- * Configurable in application.conf.
- */
-object EmailClient {
-
-  private val conf = ConfigFactory.load()
-
-  private val email = new SimpleEmail()
-
-  email.setHostName(conf.getString("email.hostName"))
-  email.setSmtpPort(conf.getInt("email.smtpPort"))
-  email.setSSLOnConnect(conf.getBoolean("email.SSLOnConnect"))
-  email.setAuthenticator(new DefaultAuthenticator(
-    conf.getString("email.authenticator.userName"),
-    conf.getString("email.authenticator.password")))
-  email.setFrom(conf.getString("email.from"))
+class EmailClient(config: EmailClientConfig) {
 
   /** Sends the simple email.
    *
-   *  @param subject the email subject.
-   *  @param text define the content of the mail.
-   *  @param destinationEmail add a recipient TO to the email.
-   *  @return the message id of the underlying MimeMessage.
+   * @param subject          the email subject.
+   * @param text             define the content of the mail.
+   * @param destinationEmail add a recipient TO to the email.
+   * @return the message id of the underlying MimeMessage.
    */
   def sendSimpleMsg(subject: String, text: String, destinationEmail: String): String = {
+    val email = new SimpleEmail()
+
+    email.setHostName(config.hostName)
+    email.setSmtpPort(config.smtpPort)
+    email.setSSLOnConnect(config.SSLOnConnect)
+    email.setAuthenticator(new DefaultAuthenticator(
+      config.username,
+      config.password))
+    email.setFrom(config.fromEmail)
     email.setSubject(subject)
       .setMsg(text)
       .addTo(destinationEmail)
       .send
   }
+
+}
+
+object EmailClient {
+
+  def apply(config: EmailClientConfig): EmailClient = new EmailClient(config)
 
 }
