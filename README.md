@@ -6,7 +6,7 @@
 
 * [Scala 2.13.1](https://scala-lang.org)
 * [Akka 2.6.14](https://akka.io)
-* [Apache Commons Email](https://commons.apache.org/proper/commons-email/)
+* [Apache Commons Email 1.5](https://commons.apache.org/proper/commons-email/)
 * [HOCON 1.4.1](https://github.com/lightbend/config)
 * [ScalaTest 3.1.0](https://www.scalatest.org/)
 
